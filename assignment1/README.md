@@ -1,28 +1,43 @@
 # DMET 1001 — Image Processing Assignment 1
+**German University in Cairo** | Dr. Mohamed Karam Gabr | **Due: 14 April 2026**
+
+---
 
 ## Team Split
 
-| Subteam | Members | Domain files |
+| Subteam | Members | Domains |
 |---|---|---|
-| **A** | Habiba, Fareeda | `subteamA/domain_spatial.py`, `subteamA/domain_fourier.py` |
-| **B** | Nour, Haya | `subteamB/domain_wavelet.py`, `subteamB/domain_custom.py` |
+| **A** | Habiba, Fareeda | Spatial, Fourier |
+| **B** | Nour, Haya | Wavelet, Custom |
+
+---
+
+## Project Structure
+
+```
+assignment1/
+├── notebook.ipynb    ← everything is here — open and run this
+├── requirements.txt  ← dependencies
+├── data/             ← CIFAR-10 downloads here automatically
+└── results/          ← model weights + plots saved here after training
+```
 
 ---
 
 ## Dataset
 
-**CIFAR-10** — downloaded automatically the first time you run any training script. You do not need to download it manually.
+**CIFAR-10** (5 classes) — downloads automatically the first time you run the notebook.
 
-- 10 classes: airplane, automobile, bird, cat, deer, dog, frog, horse, ship, truck
-- 60 000 images total (50 k train / 10 k test)
-- Split applied in `dataset.py`: **70% train / 15% val / 15% test**
-- The split is fixed by `SEED = 42` in `config.py` — all four domains see the exact same images
+- Using 5 out of 10 classes: **airplane, automobile, bird, ship, truck**
+- ~30 000 training images (5 classes × 5 000 each) | Split: **70% train / 15% val / 15% test**
+- Split is fixed with `SEED = 42` — all 4 domains see the exact same images
+- To change the classes, edit `SELECTED_CLASSES` in Cell 2 of the notebook
 
 ---
 
 ## Unified Parameters
 
-These are locked in `config.py`. **Do not change them in your domain file — always import from config.**
+All parameters are defined in **Cell 2** of the notebook. Do not change them.
 
 | Parameter | Value |
 |---|---|
@@ -38,83 +53,67 @@ These are locked in `config.py`. **Do not change them in your domain file — al
 
 ---
 
-## Shared Files 
-
-| File | What it does |
-|---|---|
-| `config.py` | All unified parameters — **read-only for domain scripts** |
-| `dataset.py` | Downloads CIFAR-10, applies the fixed split, returns DataLoaders |
-| `model.py` | `get_model(in_channels)` — returns a MobileNetV2 with the right input/output |
-| `evaluate.py` | Saves loss curves, confusion matrix, and metrics for any domain |
-
----
-
-## How Each Domain Script Should Work
-
-Every domain file follows the same structure:
-
-1. **Define a transform function** — takes a `(3, 32, 32)` tensor, returns a `(C, 224, 224)` tensor
-2. **Get dataloaders** — call `dataset.get_dataloaders(your_transform)` 
-3. **Get model** — call `model.get_model(in_channels=C)`
-4. **Training loop** — iterate for `config.NUM_EPOCHS`, using `config.LEARNING_RATE`, `config.BATCH_SIZE`, etc.
-5. **Save results** — call `evaluate.save_results(...)` to output curves + confusion matrix
-
----
-
-## Subteam A — Instructions
-
-### domain_spatial.py
-- Transform: resize `32×32 → 224×224` (bilinear), normalise with ImageNet mean/std
-- `in_channels = 3`
-- Standard baseline — expected to perform the best
-
-### domain_fourier.py
-- Apply `torch.fft.fft2` per channel on the `32×32` image
-- Take the **log-magnitude**: `log(1 + |FFT|)`
-- Resize result to `224×224`, normalise
-- `in_channels = 3`
-- In your report section: explain what the frequency domain captures and why it may or may not help classification
-
----
-
-## Subteam B — Instructions
-
-### domain_wavelet.py
-- Use `PyWavelets` (`pip install PyWavelets`) — `pywt.dwt2(channel, 'haar')`
-- One level of DWT gives 4 subbands per channel: LL, LH, HL, HH
-- Option A: use only the LL (approximation) subband → `in_channels = 3`
-- Option B: concatenate all 4 subbands → `in_channels = 12`
-- Resize to `224×224`, normalise
-- In your report section: justify your wavelet choice and subband selection
-
-### domain_custom.py
-- **Subteam B picks the domain** — suggestions: Sobel edges, Laplacian, HSV, Gabor filters
-- Must justify the choice in the report
-- Follow the same transform → dataloader → train → evaluate pattern
-
----
-
-## Running
+## How to Run
 
 ```bash
-# install dependencies first
+# 1. Install dependencies
 pip install -r requirements.txt
 
-# run each domain script from the assignment1/ folder
-python subteamA/domain_spatial.py
-python subteamA/domain_fourier.py
-python subteamB/domain_wavelet.py
-python subteamB/domain_custom.py
-```
+# 2. Open the notebook
+jupyter notebook notebook.ipynb
 
-Results (loss curves, confusion matrix, metrics) are saved automatically under a `results/` folder.
+# 3. Run all cells top to bottom (Kernel → Restart & Run All)
+```
 
 ---
 
-## Deliverables per Domain
+## Notebook Structure
 
+| Cell | What it contains |
+|---|---|
+| 1 | Imports |
+| 2 | Unified parameters (config) |
+| 3 | Dataset loader — shared |
+| 4 | Model — shared |
+| 5 | Training & evaluation utilities — shared |
+| 6–9 | **Domain 1: Spatial** (Subteam A) |
+| 10–13 | **Domain 2: Fourier** (Subteam A) |
+| 14–17 | **Domain 3: Wavelet** (Subteam B) |
+| 18–21 | **Domain 4: Custom** (Subteam B) |
+| 22–23 | Final comparison — all 4 domains |
+
+---
+
+## What Each Subteam Implements
+
+Each domain section has:
+1. The **transform function** — this is what each subteam writes
+2. Visualisation of a few transformed images
+3. A `train_model(...)` call — already written, just run it
+4. A `plot_results(...)` call — already written, just run it
+
+**Subteam A** fills in `spatial_transform` and `fourier_transform`  
+**Subteam B** fills in `wavelet_transform` and `custom_transform`
+
+---
+
+## Deliverables Checklist
+
+### Per Domain (4 total)
 - [ ] Training accuracy curve
 - [ ] Validation accuracy curve
 - [ ] Test accuracy
 - [ ] Loss curves
 - [ ] Confusion matrix
+- [ ] Per-class accuracy *(optional bonus)*
+
+### Final Submission (upload everything to Google Drive, share link)
+- [ ] `notebook.ipynb` — all cells run with visible outputs
+- [ ] Report (PDF)
+- [ ] Model weights — saved automatically to `results/` after training
+- [ ] This README
+
+### Submit via
+**https://forms.gle/ghRoTCsokhMHmZf47**
+
+---
