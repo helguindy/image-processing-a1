@@ -1,0 +1,7 @@
+torch
+torchvision
+PyWavelets
+matplotlib
+scikit-learn
+seaborn
+tqdm
