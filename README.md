@@ -1,119 +1,62 @@
-# DMET 1001 — Image Processing Assignment 1
-**German University in Cairo** | Dr. Mohamed Karam Gabr | **Due: 14 April 2026**
+## Execution Steps
 
----
+**1. Download the submission folder from Google Drive and unzip it.**
 
-## Team Split
-
-| Subteam | Members | Domains |
-|---|---|---|
-| **A** | Habiba, Fareeda | Spatial, Fourier |
-| **B** | Nour, Haya | Wavelet, Custom |
-
----
-
-## Project Structure
-
-```
+The folder contains:
+```text
 assignment1/
-├── notebook.ipynb    ← everything is here — open and run this
-├── requirements.txt  ← dependencies
-├── data/             ← CIFAR-10 downloads here automatically
-└── results/          ← model weights + plots saved here after training
+├── notebook.ipynb
+├── requirements.txt
+├── README.md
+└── results/
+    ├── spatial_weights.pth
+    ├── fourier_weights.pth
+    ├── wavelet_weights.pth
+    └── custom_weights.pth
 ```
 
----
-
-## Dataset
-
-**CIFAR-10** (5 classes) — downloads automatically the first time you run the notebook.
-
-- Using 5 out of 10 classes: **airplane, automobile, bird, ship, truck**
-- ~30 000 training images (5 classes × 5 000 each) | Split: **70% train / 15% val / 15% test**
-- Split is fixed with `SEED = 42` — all 4 domains see the exact same images
-- To change the classes, edit `SELECTED_CLASSES` in Cell 2 of the notebook
-
----
-
-## Unified Parameters
-
-All parameters are defined in **Cell 2** of the notebook. Do not change them.
-
-| Parameter | Value |
-|---|---|
-| Model | MobileNetV2 (PyTorch, pretrained on ImageNet) |
-| Input size | 224 × 224 |
-| Batch size | 64 |
-| Optimizer | Adam |
-| Learning rate | 1e-3 |
-| Weight decay | 1e-4 |
-| Epochs | 20 |
-| Random seed | 42 |
-| Split | 70 / 15 / 15 |
-
----
-
-## How to Run
-
+**2. Create and activate a virtual environment:**
 ```bash
-# 1. Install dependencies
-pip install -r requirements.txt
+python -m venv .venv
 
-# 2. Open the notebook
-jupyter notebook notebook.ipynb
+# Windows
+.venv\Scripts\activate
 
-# 3. Run all cells top to bottom (Kernel → Restart & Run All)
+# Mac/Linux
+source .venv/bin/activate
 ```
 
----
+**3. Install dependencies:**
+```bash
+pip install -r requirements.txt
+```
 
-## Notebook Structure
+**4. Open the notebook:**
 
-| Cell | What it contains |
+Open `notebook.ipynb` directly in VS Code or run:
+```bash
+jupyter notebook notebook.ipynb
+```
+
+**5. Run all cells top to bottom in order:**
+
+| Cell | Description |
 |---|---|
-| 1 | Imports |
-| 2 | Unified parameters (config) |
-| 3 | Dataset loader — shared |
-| 4 | Model — shared |
-| 5 | Training & evaluation utilities — shared |
-| 6–9 | **Domain 1: Spatial** (Subteam A) |
-| 10–13 | **Domain 2: Fourier** (Subteam A) |
-| 14–17 | **Domain 3: Wavelet** (Subteam B) |
-| 18–21 | **Domain 4: Custom** (Subteam B) |
-| 22–23 | Final comparison — all 4 domains |
+| Cell 1 | Imports all libraries |
+| Cell 2 | Sets all shared hyperparameters |
+| Cell 3 | Defines the dataset loader |
+| Cell 4 | Defines the MobileNetV2 model |
+| Cell 5 | Defines training and evaluation utilities |
+| Domain 1 cells | Spatial transform → visualise → train → results |
+| Domain 2 cells | Fourier transform → visualise → train → results |
+| Domain 3 cells | Wavelet transform → visualise → train → results |
+| Domain 4 cells | HSV transform → visualise → train → results |
+| Final comparison | Prints accuracy table and plots all validation curves |
+| Save curves cell | Saves all result plots to `results/` folder |
 
----
+> **Important:** Restart the kernel before running. Always run all cells top to bottom in a single clean run.
 
-## What Each Subteam Implements
-
-Each domain section has:
-1. The **transform function** — this is what each subteam writes
-2. Visualisation of a few transformed images
-3. A `train_model(...)` call — already written, just run it
-4. A `plot_results(...)` call — already written, just run it
-
-**Subteam A** fills in `spatial_transform` and `fourier_transform`  
-**Subteam B** fills in `wavelet_transform` and `custom_transform`
-
----
-
-## Deliverables Checklist
-
-### Per Domain (4 total)
-- [ ] Training accuracy curve
-- [ ] Validation accuracy curve
-- [ ] Test accuracy
-- [ ] Loss curves
-- [ ] Confusion matrix
-- [ ] Per-class accuracy *(optional bonus)*
-
-### Final Submission (upload everything to Google Drive, share link)
-- [ ] `notebook.ipynb` — all cells run with visible outputs
-- [ ] Report (PDF)
-- [ ] Model weights — saved automatically to `results/` after training
-- [ ] This README
-
-### Submit via
-**https://forms.gle/ghRoTCsokhMHmZf47**
-
----
+**6. Notes:**
+- CIFAR-10 downloads automatically to a `data/` folder — no manual dataset setup needed.
+- Training runs on CPU. Expect 15–20 minutes per domain on a standard laptop.
+- All output files are saved automatically to the `results/` folder.
