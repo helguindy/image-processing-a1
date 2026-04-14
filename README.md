@@ -58,5 +58,4 @@ jupyter notebook notebook.ipynb
 
 **6. Notes:**
 - CIFAR-10 downloads automatically to a `data/` folder — no manual dataset setup needed.
-- Training runs on CPU. Expect 15–20 minutes per domain on a standard laptop.
 - All output files are saved automatically to the `results/` folder.
