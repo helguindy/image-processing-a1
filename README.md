@@ -4,6 +4,12 @@
 
 The folder contains:
 ```text
+## Execution Steps
+
+**1. Download the submission folder from Google Drive and unzip it.**
+
+The folder contains:
+```text
 assignment1/
 ├── notebook.ipynb
 ├── requirements.txt
